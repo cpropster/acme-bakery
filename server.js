@@ -30,6 +30,28 @@ app.get("/api/recipes", async (req, res, next) => {
   }
 });
 
+app.post("/api/chefs", async (req, res, next) => {
+  console.log(req.body);
+  try {
+    const { name } = req.body;
+    const chef = await db.createChef(name);
+    res.send(chef);
+  } catch (error) {
+    next(error);
+  }
+});
+// app.post("/api/chefs", (req, res, next) => {
+//   console.log("im in server post", req.body);
+//   const { name } = req.body;
+//   // make sure either to destructure at the api level or the db level Not both
+
+//   db.createChef(name)
+//     .then((chef) => {
+//       res.send(chef);
+//     })
+//     .catch(next);
+// });
+
 app.use((req, res, next) => {
   next({
     status: 404,

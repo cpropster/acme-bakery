@@ -14,8 +14,8 @@ const App = () => {
   return (
     <div>
       <h1>ACME BAKERY</h1>
-      <Recipes />
-      <Chefs />
+      {/* <Recipes />
+      <Chefs /> */}
     </div>
   );
 };
