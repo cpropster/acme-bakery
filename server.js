@@ -31,7 +31,6 @@ app.get("/api/recipes", async (req, res, next) => {
 });
 
 app.post("/api/chefs", async (req, res, next) => {
-  console.log(req.body);
   try {
     const { name } = req.body;
     const chef = await db.createChef(name);
@@ -51,6 +50,26 @@ app.post("/api/chefs", async (req, res, next) => {
 //     })
 //     .catch(next);
 // });
+
+app.post("/api/recipes", async (req, res, next) => {
+  try {
+    const { title } = req.body;
+    const recipe = await db.createRecipe(title);
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete("/api/chefs:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const chef = await db.deleteChefs(id);
+    res.send(chef);
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.use((req, res, next) => {
   next({

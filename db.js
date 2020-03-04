@@ -20,9 +20,9 @@ const sync = async () => {
 
     CREATE TABLE recipes(
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        name VARCHAR(250) NOT NULL,
+        title VARCHAR(250) NOT NULL,
         "chefId" UUID REFERENCES chefs(id),
-        CHECK(char_length(name) > 0)
+        CHECK(char_length(title) > 0)
     );
   `;
   await client.query(SQL);
@@ -36,9 +36,9 @@ const createChef = async (chefName) => {
   return (await client.query(SQL, [chefName])).rows[0];
 };
 
-const createRecipe = async (recipeName, chefId) => {
-  const SQL = 'INSERT INTO recipes(name, "chefId") VALUES($1, $2) RETURNING *';
-  return (await client.query(SQL, [recipeName, chefId])).rows[0];
+const createRecipe = async (recipeTitle, chefId) => {
+  const SQL = 'INSERT INTO recipes(title, "chefId") VALUES($1, $2) RETURNING *';
+  return (await client.query(SQL, [recipeTitle, chefId])).rows[0];
 };
 
 const readChefs = async () => {
