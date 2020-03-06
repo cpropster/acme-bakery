@@ -21,14 +21,19 @@ const sync = async () => {
     CREATE TABLE recipes(
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         title VARCHAR(250) NOT NULL,
-        "chefId" UUID REFERENCES chefs(id),
+        "chefId" UUID REFERENCES chefs(id) ON DELETE CASCADE,
         CHECK(char_length(title) > 0)
     );
   `;
   await client.query(SQL);
 
-  createChef("Gaston");
-  createRecipe("Scone");
+  //when inserting test data need to await if going to pass one from the other (Gaston.id)
+  //this makes sure that your tables aren't reloading on saving otherwise you wont get a return at all / an error
+  const gaston = await createChef("Gaston");
+  const scone = await createRecipe("Scone", gaston.id);
+  const pierre = await createChef("Pierre");
+  const cake = await createRecipe("cake", pierre.id);
+  const dumpling = await createRecipe("dumpling", pierre.id);
 };
 
 const createChef = async (chefName) => {
@@ -64,8 +69,7 @@ const deleteChefs = async (chefId) => {
     DELETE FROM chefs WHERE id = $1 RETURNING *
     `;
 
-  const { rows } = await client.query(SQL, [chefId]);
-  return rows[0];
+  await client.query(SQL, [chefId]);
 };
 
 const deleteRecipes = async (recipeId) => {
@@ -73,8 +77,7 @@ const deleteRecipes = async (recipeId) => {
     DELETE FROM recipes WHERE id = $1 RETURNING *
     `;
 
-  const { rows } = await client.query(SQL, [recipeId]);
-  return rows[0];
+  await client.query(SQL, [recipeId]);
 };
 
 module.exports = {
