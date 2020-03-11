@@ -1,6 +1,6 @@
 import React from "react";
 
-const Recipes = ({ recipes, chefs, deleteRecipe, createRecipe }) => {
+const Recipes = ({ recipes, chefs, deleteRecipe }) => {
   return (
     <section>
       <h2>Recipes ({recipes.length})</h2>

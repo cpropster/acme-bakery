@@ -61,6 +61,12 @@ app.post("/api/recipes", async (req, res, next) => {
   }
 });
 
+app.put("/api/chefs/:id", (req, res, next) => {
+  db.updateChef(req.body)
+    .then((chef) => res.send(chef))
+    .catch(next);
+});
+
 app.delete("/api/chefs/:id", async (req, res, next) => {
   try {
     const { id } = req.params;

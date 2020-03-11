@@ -11,7 +11,7 @@ const Chefs = ({ chefs, deleteChef, recipes, createChef }) => {
           });
           return (
             <li key={chef.id}>
-              {chef.name}
+              <a href={`#view=chef&id=${chef.id}`}>{chef.name}</a>
               <button onClick={() => deleteChef(chef)}>x</button>
               <ul>
                 {filteredRecipes.map((recipe) => {

@@ -4,6 +4,8 @@ import Recipes from "./Recipes";
 import Chefs from "./Chefs";
 import ChefForm from "./ChefForm";
 import RecipeForm from "./RecipeForm";
+import ChefEdit from "./ChefEdit";
+import qs from "qs";
 
 const { useState, useEffect } = React;
 
@@ -11,6 +13,22 @@ const App = () => {
   const [error, setError] = useState("");
   const [chefs, setChefs] = useState([]);
   const [recipes, setRecipes] = useState([]);
+  const [params, setParams] = useState(qs.parse(window.location.hash.slice(1)));
+
+  useEffect(() => {
+    window.addEventListener("hashchange", () => {
+      setParams(qs.parse(window.location.hash.slice(1)));
+    });
+  }, []);
+
+  const { view } = params;
+
+  const updateChef = async (chef) => {
+    const updatedChef = (await axios.put(`/api/chefs/${chef.id}`, chef)).data;
+    setChefs(
+      chefs.map((chef) => (chef.id === updatedChef.id ? updatedChef : chef))
+    );
+  };
 
   const deleteChef = async (chefToDelete) => {
     try {
@@ -66,21 +84,33 @@ const App = () => {
 
   return (
     <div>
-      <h1>ACME BAKERY</h1>
-      <RecipeForm createRecipe={createRecipe} chefs={chefs} />
-      <Recipes
-        recipes={recipes}
-        chefs={chefs}
-        deleteRecipe={deleteRecipe}
-        createRecipe={createRecipe}
-      />
-      <ChefForm createChef={createChef} />
-      <Chefs
-        chefs={chefs}
-        recipes={recipes}
-        deleteChef={deleteChef}
-        createChef={createChef}
-      />
+      <h1>
+        <a href="#">ACME BAKERY</a>
+      </h1>
+      {view === "chef" && (
+        <ChefEdit
+          chef={chefs.find((chef) => chef.id === params.id)}
+          update={updateChef}
+        />
+      )}
+      {!view && (
+        <div>
+          <RecipeForm createRecipe={createRecipe} chefs={chefs} />
+          <Recipes
+            recipes={recipes}
+            chefs={chefs}
+            deleteRecipe={deleteRecipe}
+            createRecipe={createRecipe}
+          />
+          <ChefForm createChef={createChef} />
+          <Chefs
+            chefs={chefs}
+            recipes={recipes}
+            deleteChef={deleteChef}
+            createChef={createChef}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -64,6 +64,15 @@ const readRecipes = async () => {
   return rows;
 };
 
+const updateChef = async ({ name, id }) => {
+  return (
+    await client.query("UPDATE chefs SET name = $1 WHERE id = $2 returning *", [
+      name,
+      id,
+    ])
+  ).rows[0];
+};
+
 const deleteChefs = async (chefId) => {
   const SQL = `
     DELETE FROM chefs WHERE id = $1 RETURNING *
@@ -85,6 +94,7 @@ module.exports = {
   createRecipe,
   readChefs,
   readRecipes,
+  updateChef,
   deleteChefs,
   deleteRecipes,
   sync,
